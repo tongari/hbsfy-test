@@ -69,9 +69,23 @@ module.exports = function(grunt) {
       options: {
           transform: ['hbsfy']
       }
+    },
+    handlebars: {
+      compile: {
+        options: {
+          namespace: 'TON_HBS',
+          processName: function(filepath) {
+            var pieces = filepath.split("/");
+            return pieces[pieces.length - 1].replace(/.hbs$/ , '');
+          }
+        },
+        files: {
+          '<%= path.dist %>js/hbs-compile.js': '<%= path.hbs_src%>**/*.hbs'
+        }
+      }
     }
   });
 
-  grunt.registerTask('build', ['copy', 'browserify']);
+  grunt.registerTask('build', ['copy', 'handlebars', 'browserify']);
   grunt.registerTask('default', ['build', 'connect', 'watch']);
 };
